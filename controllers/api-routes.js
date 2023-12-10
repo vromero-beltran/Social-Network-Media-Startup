@@ -3,6 +3,8 @@ const User = require('../models/User');
 const Thought = require('../models/Thought');
 const Reaction = require('../models/Reaction');
 
+// USERS----------------------------------------------------------------------------------
+
 // GET all users
 app.get('/users', async (req, res) => {
     try {
@@ -17,15 +19,15 @@ app.get('/users', async (req, res) => {
 app.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
-           .populate({
+            .populate({
                 path: 'thoughts',
                 select: '-__v'
             })
-           .populate({
+            .populate({
                 path: 'friends',
                 select: '-__v'
             })
-           .select('-__v');
+            .select('-__v');
         if (!user) {
             res.status(404).json({ message: 'No user found with that ID!' });
             return;
@@ -77,6 +79,8 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
+// FRIENDS--------------------------------------------------------------------------------
+
 // POST to add a new friend to a user's friend list
 app.post('/users/:userId/friends/:friendId', async (req, res) => {
     try {
@@ -118,6 +122,9 @@ app.delete('/users/:userId/friends/:friendId', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+// THOUGHTS------------------------------------------------------------------------------
+
 
 // GET all thoughts
 app.get('/thoughts', async (req, res) => {
@@ -183,6 +190,8 @@ app.delete('/thoughts/:id', async (req, res) => {
         res.status(500).json(err);
     }
 });
+
+// REACTIONS----------------------------------------------------------------------------
 
 // POST to create a reaction stored in a single thought's reactions array field
 app.post('/thoughts/:thoughtId/reactions', async (req, res) => {
