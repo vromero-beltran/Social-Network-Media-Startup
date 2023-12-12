@@ -1,7 +1,6 @@
 const app = require('express').Router();
 const User = require('../models/User');
 const Thought = require('../models/Thought');
-const Reaction = require('../models/Reaction');
 
 // USERS----------------------------------------------------------------------------------
 
@@ -16,7 +15,7 @@ app.get('/users', async (req, res) => {
 });
 
 // GET a single user by its _id and populated thought and friend data
-app.get('/users/:id', async (req, res) => {
+const getUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
             .populate({
@@ -36,7 +35,31 @@ app.get('/users/:id', async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
-});
+};
+module.exports = {
+    getUser
+};
+// app.get('/users/:id', async (req, res) => {
+//     try {
+//         const user = await User.findById(req.params.id)
+//             .populate({
+//                 path: 'thoughts',
+//                 select: '-__v'
+//             })
+//             .populate({
+//                 path: 'friends',
+//                 select: '-__v'
+//             })
+//             .select('-__v');
+//         if (!user) {
+//             res.status(404).json({ message: 'No user found with that ID!' });
+//             return;
+//         }
+//         res.status(200).json(user);
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// });
 
 // POST a new user
 app.post('/users', async (req, res) => {
